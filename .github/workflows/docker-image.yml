@@ -1,0 +1,81 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches:
+      - '**'
+    tags:
+      - 'v*'
+  schedule:
+    - cron: '35 5 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  HOST_PORT: 8080
+  DOCKER_PORT: 8080
+jobs:
+
+  rebuild-tags:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
+    permissions:
+      actions: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Trigger workflow for all tags
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git fetch --tags
+          for tag in $(git tag); do
+            echo "Triggering build for $tag..."
+            gh workflow run docker-image.yml --ref "$tag"
+          done
+
+  integration-tests:
+    uses: ./.github/workflows/integration-tests.yml
+
+  build:
+    needs: integration-tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+
+    - uses: actions/checkout@v7
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v4
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Extract metadata (tags, labels) for Docker
+      id: meta
+      uses: docker/metadata-action@v6
+      with:
+        images: sfuhrm/docker-apache-webdav
+
+    - name: Build and push Docker image
+      id: push
+      uses: docker/build-push-action@v7
+      with:
+        context: .
+        file: ./Dockerfile
+        platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6,linux/ppc64le,linux/s390x,linux/386,linux/riscv64
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}

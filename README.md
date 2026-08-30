@@ -74,6 +74,14 @@ $ docker run --name webdav -p 8080:8080 \
     -d sfuhrm/docker-apache-webdav
 ```
 
+## Configuration
+
+### Maximum upload size
+
+By default the server limits request bodies to 1 GiB (`1073741824` bytes) to
+bound disk-fill denial-of-service. Override the limit with the `MAX_UPLOAD_SIZE`
+environment variable (bytes), or set `0` to disable the limit.
+
 ## Docker compose
 
 Or use docker-compose example with a htpasswd secret

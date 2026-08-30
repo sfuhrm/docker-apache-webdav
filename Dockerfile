@@ -9,7 +9,7 @@ RUN apk add --no-cache apache2 apache2-webdav apr-util-dbm_gdbm && \
              "/var/lib/apache2/dav" && \
     rm -rf "/var/www/localhost" && \
     rm -f "/etc/apache2/conf.d/dav.conf" && \
-    chown -R apache:apache "/media/data" "/var/lib/apache2" "/etc/apache2/conf.d" && \
+    chown -R apache:apache "/media/data" "/var/lib/apache2" && \
     sed -i -e 's/^Listen 80$/Listen 8080/' \
            -e 's|^ErrorLog logs/error.log$|ErrorLog /dev/stderr|' \
            -e 's|CustomLog logs/access.log combined$|CustomLog /dev/stdout combined|' \
@@ -20,6 +20,7 @@ RUN apk add --no-cache apache2 apache2-webdav apr-util-dbm_gdbm && \
 
 COPY --chmod=0555 entrypoint.sh /
 COPY --chown=root:root webdav.conf /etc/apache2/conf.d/webdav.conf.template
+COPY --chown=apache:apache webdav.conf /etc/apache2/conf.d/webdav.conf
 
 VOLUME /media/data
 

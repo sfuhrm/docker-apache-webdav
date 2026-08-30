@@ -24,8 +24,7 @@ if [ ! -r "$MOUNTPOINT" ]; then
 	exit 4
 fi
 
-# Regenerate the config from the immutable template on every start to stay idempotent
-cp "$CONFIG_TEMPLATE" "$CONFIG_FILE"
+MAX_UPLOAD_SIZE="${MAX_UPLOAD_SIZE:-1073741824}"
 
 HTPASSWD_FILE="${HTPASSWD_FILE:-}"
 
@@ -34,14 +33,16 @@ if [ -n "$HTPASSWD_FILE" ]; then
 		echo "Credentials taken from htpasswd file $HTPASSWD_FILE."
 		cp "$HTPASSWD_FILE" "$HTPASSWD"
 		chmod 600 "$HTPASSWD"
+		sed "s|LimitRequestBody .*|LimitRequestBody ${MAX_UPLOAD_SIZE}|" "$CONFIG_TEMPLATE" > "$CONFIG_FILE"
 	else
 		echo "Htpasswd file $HTPASSWD_FILE is not readable!"
 		exit 5
 	fi
 else
 	echo "Using no auth."
-	sed -i -e '/AuthType/d' -e '/AuthName/d' -e '/AuthBasicProvider/d' -e '/AuthUserFile/d' \
-	       -e 's/Require valid-user/Require all granted/' "$CONFIG_FILE"
+	grep -vE 'AuthType|AuthName|AuthBasicProvider|AuthUserFile' "$CONFIG_TEMPLATE" \
+		| sed -e "s|LimitRequestBody .*|LimitRequestBody ${MAX_UPLOAD_SIZE}|" \
+		      -e 's/Require valid-user/Require all granted/' > "$CONFIG_FILE"
 fi
 
 # Validate the generated config before starting httpd

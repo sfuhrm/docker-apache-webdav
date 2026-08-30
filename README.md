@@ -6,18 +6,14 @@
 [![GitHub release](https://img.shields.io/github/v/release/sfuhrm/docker-apache-webdav)](https://github.com/sfuhrm/docker-apache-webdav/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Incredibly secure, fast and light WebDav Server, built from Alpine image - bare minimum with no bells and whistles.
+Incredibly secure, fast WebDav Server, built from Alpine image - bare minimum with no bells and whistles.
 
-> This is a fork of https://github.com/maltokyo/docker-nginx-webdav with the following changes:
-> * replacing the nginx web server with Apache httpd (WebDAV via mod_dav),
-> * reducing the image layers and size (
-maltokyos image: [![Docker Image Size](https://img.shields.io/docker/image-size/maltokyo/docker-nginx-webdav/latest)](https://hub.docker.com/r/maltokyo/docker-nginx-webdav),
+> This is a variant of https://github.com/sfuhrm/docker-nginx-webdav with the following changes:
+> * using Apache httpd instead of nginx,
+> * increasing the image layers and size (
+nginx image: [![Docker Image Size](https://img.shields.io/docker/image-size/sfuhrm/docker-nginx-webdav/latest)](https://hub.docker.com/r/maltokyo/docker-nginx-webdav),
 this image: [![Docker Image Size](https://img.shields.io/docker/image-size/sfuhrm/docker-apache-webdav/latest)](https://hub.docker.com/r/sfuhrm/docker-apache-webdav)),
-> * filesystem secrets are never put in an environment variable,
-> * replacing the base Debian image with Alpine Linux,
-> * improving the entrypoint script,
-> * adding Github Actions build / push with automatic daily image building.
-> * Support for architectures linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6,linux/ppc64le,linux/s390x,linux/386,linux/riscv64
+> * no more plain passwords, this image only deals with hashed htpasswd files
 
 ## Docker tags
 

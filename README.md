@@ -10,7 +10,7 @@ Incredibly secure, fast WebDav Server, built from Alpine image - bare minimum wi
 
 > This is a variant of https://github.com/sfuhrm/docker-nginx-webdav with the following changes:
 > * using Apache httpd instead of nginx,
-> * increasing the image layers and size (
+> * decreasing the image layers and size (
 nginx image: [![Docker Image Size](https://img.shields.io/docker/image-size/sfuhrm/docker-nginx-webdav/latest)](https://hub.docker.com/r/sfuhrm/docker-nginx-webdav),
 this image: [![Docker Image Size](https://img.shields.io/docker/image-size/sfuhrm/docker-apache-webdav/latest)](https://hub.docker.com/r/sfuhrm/docker-apache-webdav)),
 > * no more plain passwords, this image only deals with hashed htpasswd files

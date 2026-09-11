@@ -76,6 +76,11 @@ $ docker run --name webdav -p 8080:8080 \
 
 ## Configuration
 
+### Compression
+
+Responses with text-like content types (HTML, CSS, JavaScript, XML, JSON,
+plain text, SVG) are transparently compressed with gzip via `mod_deflate`.
+
 ### Maximum upload size
 
 By default the server limits request bodies to 1 GiB (`1073741824` bytes) to
